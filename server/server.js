@@ -15,28 +15,39 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
   console.log('new user connected');
 
-  // socket.emit('newMessage', {
-  //   from: 'seano',
-  //   text: 'lets get lunch',
-  //   createdAt: 1234
-  // });
+  // emit back
+  // from admin, welcome
+  socket.emit('newMessage', {
+    from: 'Admin',
+    text: 'Welcome to the chat app!',
+    createdAt: new Date().getTime()
+  });
+
+  // emit all
+  // from admin, new user joined!
+  // broadcast to all except the one it came in on
+  socket.broadcast.emit('newMessage', {
+      from: 'Admin',
+      text: 'New user joined!',
+      createdAt: new Date().getTime()
+  });
 
   socket.on('createMessage', (newMsg) => {
     console.log('createMessage', newMsg);
 
-    io.emit('newMessage', {
-      from: newMsg.from,
-      text: newMsg.text,
-      createdAt: new Date().getTime()
-    });  //emits to all connections
-    
-    // setTimeout(() => {
-    //     socket.emit('newMessage', {
-    //       from: 'seano',
-    //       text: `${newMsg.text} sounds great!`,
-    //       createdAt: 1234
-    //     })
-    // }, 3000);
+    // broadcast to all except the one it came in on
+    // socket.broadcast.emit('newMessage', {
+    //     from: newMsg.from,
+    //     text: newMsg.text,
+    //     createdAt: new Date().getTime()
+    // });
+
+    //emits to all connections
+    // io.emit('newMessage', {
+    //   from: newMsg.from,
+    //   text: newMsg.text,
+    //   createdAt: new Date().getTime()
+    // });
 
   });
 
