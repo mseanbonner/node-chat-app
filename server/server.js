@@ -7,7 +7,7 @@ const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
 
 //const utils = require('./utils/utils');
-const {generateMessage} = require('./utils/message');
+const {generateMessage, generateLocationMessage} = require('./utils/message');
 
 var app = express();
 var server = http.createServer(app);  //works due to tight integ app/server
@@ -29,23 +29,10 @@ io.on('connection', (socket) => {
 
     callback('This is from the Server');
 
+  });
 
-
-
-    // broadcast to all except the one it came in on
-    // socket.broadcast.emit('newMessage', {
-    //     from: newMsg.from,
-    //     text: newMsg.text,
-    //     createdAt: new Date().getTime()
-    // });
-
-    //emits to all connections
-    // io.emit('newMessage', {
-    //   from: newMsg.from,
-    //   text: newMsg.text,
-    //   createdAt: new Date().getTime()
-    // });
-
+  socket.on('createLocationMessage', (coords) => {
+    io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude))
   });
 
   socket.on('disconnect', () => {
