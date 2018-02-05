@@ -1,18 +1,30 @@
-var socket = io();  //est websocket to server
+var socket = io();  //establish websocket to server
 
 socket.on('connect', function () {
   console.log('Connected to server');
-
-  // socket.emit('createMessage', {
-  //   from: 'dude',
-  //   text: 'how about shwarma?'
-  // });
 });
 
 socket.on('disconnect', function () {
   console.log('Disconnected from server');
 });
 
-socket.on('newMessage', function (msg) {
-  console.log('New Message: ' , msg);
+socket.on('newMessage', function (message) {
+  console.log('New Message: ' , message);
+
+  var li = jQuery('<li></li>');
+  li.text(`${message.from}: ${message.text}`);
+  jQuery('#messages').append(li);
+
+});
+
+jQuery('#message-form').on('submit', function (e) {
+  e.preventDefault();
+
+  socket.emit('createMessage', {
+    from: 'User',
+    text: jQuery('[name=message]').val()
+  }, function (data) {
+    console.log('Got with form:', data);
+  });
+
 });

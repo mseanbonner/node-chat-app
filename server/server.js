@@ -22,10 +22,16 @@ io.on('connection', (socket) => {
 
   socket.broadcast.emit('newMessage', generateMessage('Admin','New user joined!'));
 
-  socket.on('createMessage', (newMsg) => {
-    console.log('createMessage', newMsg);
+  socket.on('createMessage', (message, callback) => {
+    console.log('createMessage', message);
 
-    io.emit('newMessage', generateMessage(newMsg.from, newMsg.text));
+    io.emit('newMessage', generateMessage(message.from, message.text));
+
+    callback('This is from the Server');
+
+
+
+
     // broadcast to all except the one it came in on
     // socket.broadcast.emit('newMessage', {
     //     from: newMsg.from,
